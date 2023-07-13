@@ -66,6 +66,70 @@ startInstall()
     echo ""
     sleep 3s
 
+
+#######################################################
+###           Install for Arm64 / Raspbian          ###
+#######################################################
+
+    if [[ "$OS" == "7" ]]; then
+        echo "    1. Installing System Updates..."
+        (sudo apt update  && sudoa apt upgrade -y) > ~/docker-script-install.loc 2>&1 &
+        ## Show a spinner for activity progress
+        pid=$   # Process ID of the previous running command
+        spin='-\|/'
+        i=0
+        while kill -0 $pid 2>/dev/null
+        do
+            i=$(( (i+1) %4 ))
+            printf "\r${spin:$i:1}"
+            sleep .25
+        done
+        printf "\r"
+
+        echo "    2. Install Prerequisite Packages..."
+        (sudo apt install curl wget git -y) >> ~/docker-script-install.log 2>&1
+        ## Spinner time...
+        pid=$   # Process ID of the previous running command
+        spin='-\|/'
+        i=0
+        while kill -0 $pid 2>/dev/null
+        do
+            i=$(( (i+1) %4 ))
+            printf "\r${spin:$i:1}"
+            sleep .25
+        done
+        printf "\r"
+
+        if [[ "$ISACT" != "active" ]]; then
+            echo "    3. Installing Docker-CE (Community Edition)..."
+            sleep 2s
+
+        
+            curl -fsSL https://get.docker.com | sh >> ~/docker-script-install.log 2>&1
+            # Time to spin
+            pid=$   # Process ID of the previous running command
+            spin='-\|/'
+            i=0
+            while kill -0 $pid 2>/dev/null
+            do
+                i=$(( (i+1) %4 ))
+                printf "\r${spin:$i:1}"
+                sleep .25
+            done
+            printf "\r"
+
+            echo "      - docker-ce version is now:"
+            DOCKERV=$(docker -v)
+            echo "          "${DOCKERV}
+            sleep 3s
+
+            if [[ "$OS" == 2 ]]; then
+                echo "    5. Starting Docker Service"
+                sudo systemctl docker start >> ~/docker-script-install.log 2>&1
+            fi
+        fi
+    fi
+
 #######################################################
 ###           Install for Debian / Ubuntu           ###
 #######################################################
@@ -273,6 +337,39 @@ startInstall()
         echo ""
         echo ""
         sleep 2s
+
+        ######################################
+        ###     Install Raspbian / Arm64   ###
+        ######################################
+
+        if [[ "$OS" == "7" ]]; then
+            echo "    1. Installing dependencies..."
+            (sudo apt-get install libffi-dev libssl-dev python3-dev python3 python3-pip) >> ~/docker-script-install.log 2>&1
+            # Show our spinner
+            pid=$   # Process ID of the previous running command
+            spin='-\|/'
+            i=0
+            while kill -0 $pid 2>/dev/null
+            do
+                i=$(( (i+1) %4 ))
+                printf "\r${spin:$i:1}"
+                sleep .25
+            done
+            printf "\r"
+
+            (sudo pip3 install docker-compose) >> ~/docker-script-install.log 2>&1
+            # Show the spinner again...
+            pid=$   # Process ID of the previous running command
+            spin='-\|/'
+            i=0
+            while kill -0 $pid 2>/dev/null
+            do
+                i=$(( (i+1) %4 ))
+                printf "\r${spin:$i:1}"
+                sleep .25
+            done
+            printf "\r"
+        fi
 
         ######################################
         ###     Install Debian / Ubuntu    ###
@@ -522,6 +619,7 @@ select _ in \
     "Ubuntu 20.04 / 21.04 / 22.04" \
     "Arch Linux" \
     "Open Suse"\
+    "Arm64 / Raspian"\
     "End this Installer"
 do
   case $REPLY in
@@ -531,7 +629,8 @@ do
     4) installApps ;;
     5) installApps ;;
     6) installApps ;;
-    7) exit ;;
+    7) installApps ;;
+    8) exit ;;
     *) echo "Invalid selection, please try again..." ;;
   esac
 done

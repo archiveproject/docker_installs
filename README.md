@@ -26,13 +26,15 @@ Save with CTRL + O, then Enter to confirm, and exit the nano editor with CTRL + 
 `./docker-install.sh`
 
 ## Prompts from the script:
-First, you'll be prompted to select the number for your OS / Distro.  Currently I support CentOS 7 and 8, Debian 10 and 11, Ubuntu 18.04, 20.04, 22.04, Arch Linux, and Open Suse (tested on Leap 15.4). 
+First, you'll be prompted to select the number for your OS / Distro.  Currently I support RaspbianOS (latest), CentOS 7 and 8, Debian 10 and 11, Ubuntu 18.04, 20.04, 22.04, 23.05, Arch Linux, and Open Suse (tested on Leap 15.4). 
 
 Next, you'll be asked to answer "y" to any of the four software packages you'd like to install. 
-- Docker-CE
-- Docker-Compose
+- Docker-CE (you'll need this for the others to work)
+- Docker-Compose (you'll need this for any of the applications to start properly)
 - NGinx Proxy Manager
-- Navidrome (music player))
+- Navidrome (music player)
+- Remotely (Remote Desktop Support Tool)
+- Guacamole (Remote Desktop Protocol in the Browser)
 - Portainer-CE
   - if you answer y to Portainer, you'll be asked another question
 
@@ -51,15 +53,15 @@ Answering "n" to any of them will cause them to be skipped.
 Before prompting to install Docker or Docker-Compose, I do try to see if you already have them installed, and I skip the prompt if you do (or I try to anyway).
 
 ## Recent changes
-- Updated the docker-compose install tp pull from the github repo ( thanks @binuengoor ) and get the latest version available.
-- Added OpenSuse as an option
-- Improved Arch Installer
+- Added option for Raspbian install with Arm64 Chips.
+- Added Remotely as an application option
+- Added Guacamole as an application option
 
 ## Future Work
-- [ ] Make it work for Raspberry Pi
+- [X] Make it work for Raspberry Pi
 - [X] Make it work for Arch
 - [X] Make it work for OpenSuse
-- [ ] Maybe add a few other default containers to pull down and start running
+- [X] Maybe add a few other default containers to pull down and start running
 - [ ] Prompt for Credentials to use in NGinX Proxy Manager db settings vs. using the defaults.
 - [X] Set all Conteiners on a single docker network
 - [ ] Clean it up and split out functions to other files to make it easier to run / work on.

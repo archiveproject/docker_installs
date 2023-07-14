@@ -620,6 +620,10 @@ startInstall()
         echo "      You will likely want to create a reverse proxy entry in NGinX Proxy Manager"
         echo "      for your new Remotely server.  If so, also make sure to set the"
         echo "      'Require https' option in the Remotely Settings."
+        echo ""
+        echo ""
+        sleep 3s
+        cd
     fi
 
     if [[ "$GUAC" == [yY] ]]; then
@@ -659,6 +663,9 @@ startInstall()
         echo "      delete / disable the default user."
         echo ""
         echo ""
+        sleep 3s
+        cd
+    fi
 
     echo "All docker applications have been added to the docker network my-main-app"
     echo ""

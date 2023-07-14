@@ -34,6 +34,8 @@ installApps()
     read -rp "NGinX Proxy Manager (y/n): " NPM
     read -rp "Navidrome (y/n): " NAVID
     read -rp "Portainer-CE (y/n): " PTAIN
+    read -rp "Remotely - Remote Desktop Support (y/n): " REMOTELY
+
 
     if [[ "$PTAIN" == [yY] ]]; then
         echo ""
@@ -449,7 +451,7 @@ startInstall()
     fi
 
     echo "################################################"
-    echo "######      Create a Docker Network    #########"
+    echo "######      Creating a Docker Network    #######"
     echo "################################################"
 
     sudo docker network create my-main-net
@@ -585,6 +587,78 @@ startInstall()
         sleep 3s
         cd
     fi
+
+    if [[ "$REMOTELY" == [yY] ]]; then
+        echo "##########################################"
+        echo "###          Install Remotely          ###"
+        echo "##########################################"
+    
+        # pull a remotely docker-compose file from gitlab
+        echo "    1. Pulling a default Remotely docker-compose.yml file."
+
+        mkdir -p docker/remotely
+        cd docker/remotely
+
+        curl https://gitlab.com/bmcgonag/docker_installs/-/raw/main/docker_compose_remotely.yml -o docker-compose.yml >> ~/docker-script-install.log 2>&1
+
+        echo ""
+        echo ""
+        echo "    2. Running the docker-compose.yml to pull and start Remotely..."
+        echo ""
+
+        if [[ "$OS" == "1" ]]; then
+          docker-compose up -d
+        else
+          sudo docker-compose up -d
+        fi
+
+        echo "    3. You can find the Remotely folder at ~/docker/remotely..."
+        echo ""
+        echo "      Navigate to your server hostname / IP address on port 8188 to setup"
+        echo "      your new Remotely installation."
+        echo ""
+        echo "      You will likely want to create a reverse proxy entry in NGinX Proxy Manager"
+        echo "      for your new Remotely server.  If so, also make sure to set the"
+        echo "      'Require https' option in the Remotely Settings."
+    fi
+
+    if [[ "$GUAC" == [yY] ]]; then
+        echo "##########################################"
+        echo "###         Installing Guacamole       ###"
+        echo "##########################################"
+    
+        # pull a guacamole docker-compose file from gitlab
+        echo "    1. Pulling a default Guacamole docker-compose.yml file."
+
+        mkdir -p docker/guacamole
+        cd docker/guacamole
+
+        curl https://gitlab.com/bmcgonag/docker_installs/-/raw/main/docker_compose_guacamole.yml -o docker-compose.yml >> ~/docker-script-install.log 2>&1
+
+        echo ""
+        echo ""
+        echo "    2. Running the docker-compose.yml to pull and start Guacamole..."
+        echo ""
+
+        if [[ "$OS" == "1" ]]; then
+          docker-compose up -d
+        else
+          sudo docker-compose up -d
+        fi
+
+        echo "    3. You can find the Guacamole folder at ~/docker/guacamole..."
+        echo ""
+        echo "      You can now navigate in your browser to yoru server IP at"
+        echo "      port number 8080 to reach the Guacamole login page."
+        echo ""
+        echo "      Use the default credentials to loging the first time:"
+        echo "          username: guacadmin"
+        echo "          password: guacadmin"
+        echo ""
+        echo "      It is highly recommended that you create a new admin user, and"
+        echo "      delete / disable the default user."
+        echo ""
+        echo ""
 
     echo "All docker applications have been added to the docker network my-main-app"
     echo ""

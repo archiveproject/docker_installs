@@ -35,7 +35,7 @@ installApps()
     read -rp "Navidrome (y/n): " NAVID
     read -rp "Portainer-CE (y/n): " PTAIN
     read -rp "Remotely - Remote Desktop Support (y/n): " REMOTELY
-
+    read -rp "Guacamole - Remote Desktop Protocol in the Browser (y/n): " GUAC
 
     if [[ "$PTAIN" == [yY] ]]; then
         echo ""
@@ -672,7 +672,8 @@ echo ""
 echo ""
 
 clear
-
+echo ""
+echo ""
 echo "Let's figure out which OS / Distro you are running."
 echo ""
 echo ""

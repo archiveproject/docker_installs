@@ -456,6 +456,8 @@ startInstall()
 
     sudo docker network create my-main-net
     sleep 2s
+    # move to home directory of user
+    cd
 
     if [[ "$NPM" == [yY] ]]; then
         echo "##########################################"
